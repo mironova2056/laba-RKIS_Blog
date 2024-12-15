@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль пользователя</title>
+</head>
+<body>
+    <header>
+        <h1>Профиль пользователя</h1>
+        <nav>
+            <a href="{% url 'home' %}">Главная</a>
+            <a href="{% url 'create_post' %}">Создать пост</a>
+        </nav>
+    </header>
+    <main>
+        <h2>Редактирование профиля</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Сохранить изменения</button>
+        </form>
+        <hr>
+        <h2>Удалить профиль</h2>
+        <form method="post" action="{% url 'delete_profile' %}">
+            {% csrf_token %}
+            <button type="submit" style="color: red;">Удалить мой профиль</button>
+        </form>
+    </main>
+</body>
+</html>

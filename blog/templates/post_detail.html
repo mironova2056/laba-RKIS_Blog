@@ -1,0 +1,35 @@
+<!-- post_detail.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ post.title }}</title>
+</head>
+<body>
+    <h1>{{ post.title }}</h1>
+    <p>{{ post.content }}</p>
+    <p><strong>Автор:</strong> {{ post.author.username }}</p>
+    <p><strong>Дата создания:</strong> {{ post.created_at }}</p>
+
+    <h2>Комментарии</h2>
+    <ul>
+        {% for comment in comments %}
+            <li>
+                <strong>{{ comment.author.username }}:</strong> {{ comment.content }} ({{ comment.created_at }})
+            </li>
+        {% empty %}
+            <li>Комментариев пока нет.</li>
+        {% endfor %}
+    </ul>
+
+    <h3>Добавить комментарий</h3>
+    <form action="{% url 'create_comment' post.id %}" method="POST">
+        {% csrf_token %}
+        <textarea name="content" rows="4" cols="50" placeholder="Ваш комментарий..."></textarea><br>
+        <button type="submit">Добавить комментарий</button>
+    </form>
+
+    <a href="{% url 'home' %}">Назад на главную</a>
+</body>
+</html>

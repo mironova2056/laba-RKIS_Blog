@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Микроблог</title>
+</head>
+<body>
+    <header>
+        <h1>Микроблог</h1>
+        <nav>
+            <a href="{% url 'home' %}">Главная</a>
+            {% if user.is_authenticated %}
+            <a href="{% url 'profile' %}">Профиль</a>
+            <a href="{% url 'logout' %}">Выйти</a>
+            <a href="{% url 'create_post' %}">Создать пост</a>
+            {% else %}
+            <a href="{% url 'register' %}">Регистрация</a>
+            <a href="{% url 'login' %}">Войти</a>
+            {% endif %}
+        </nav>
+    </header>
+    <main>
+        <h2>Последние посты</h2>
+        <ul>
+            {% for post in posts %}
+                <li>
+                    <strong>{{ post.author.username }}</strong> - {{ post.created_at }}<br>
+                    <p>{{ post.content }}</p>
+                    <p>Количество комментариев: {{ post.comments.count }}</p>
+                    <a href="{% url 'edit_post' post.id %}">Редактировать</a>
+                    <a href="{% url 'post_detail' post.id %}">Детали поста</a>
+                </li>
+                <hr>
+            {% empty %}
+                <p>Нет постов для отображения.</p>
+            {% endfor %}
+        </ul>
+    </main>
+</body>
+</html>
