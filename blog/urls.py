@@ -10,6 +10,7 @@ from .views import (
     register,
     user_login,
     user_logout,
+    like_post,
 )
 
 urlpatterns = [
@@ -23,4 +24,5 @@ urlpatterns = [
     path('register/', register, name='register'),
     path('login/', user_login, name='login'),  # Новый маршрут для входа
     path('logout/', user_logout, name='logout'),
+    path('post/<int:post_id>/like/', like_post, name='like_post'),
 ]

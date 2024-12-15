@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Post, Comment, UserProfile
+from .models import Post, Comment, UserProfile, Like
 from .forms import UserProfileForm, PostForm, CommentForm, UserRegistrationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -36,6 +36,8 @@ def create_post(request):
 
 def home_view(request):
     posts = Post.objects.all().order_by('-created_at')[:50]
+    for post in posts:
+        post.like_count = post.like_set.count()
     return render(request, 'home.html', {'posts': posts})
 
 @login_required
@@ -78,8 +80,9 @@ def create_comment(request, post_id):
 
 def post_detail(request, post_id):
     post = get_object_or_404(Post, id=post_id)
+    user_liked = Like.objects.filter(user=request.user, post=post).exists() if request.user.is_authenticated else False
     comments = Comment.objects.filter(post=post).order_by('-created_at')  # Получаем комментарии к посту
-    return render(request, 'post_detail.html', {'post': post, 'comments': comments})
+    return render(request, 'post_detail.html', {'post': post, 'comments': comments, 'user_liked': user_liked})
 def register(request):
     if request.method == "POST":
         form = UserRegistrationForm(request.POST)
@@ -110,3 +113,16 @@ def user_logout(request):
     logout(request)
     messages.success(request, 'Вы вышли из системы.')
     return redirect('home')
+
+
+@login_required
+def like_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+
+    # Если у вас есть конфликт имен в like, вы можете переименовать
+    like_instance, created = Like.objects.get_or_create(user=request.user, post=post)
+
+    if not created:
+        like_instance.delete()  # Удаляем лайк, если он уже существует
+
+    return redirect('post_detail', post_id=post.id)

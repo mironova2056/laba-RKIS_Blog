@@ -28,6 +28,7 @@
                     <strong>{{ post.author.username }}</strong> - {{ post.created_at }}<br>
                     <p>{{ post.content }}</p>
                     <p>Количество комментариев: {{ post.comments.count }}</p>
+                    <p>Лайков: {{ post.like_count }}</p>
                     <a href="{% url 'edit_post' post.id %}">Редактировать</a>
                     <a href="{% url 'post_detail' post.id %}">Детали поста</a>
                 </li>
